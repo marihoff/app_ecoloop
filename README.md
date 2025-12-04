@@ -29,11 +29,11 @@ O diferencial do projeto é sua arquitetura *client-side*: toda a persistência 
 - **LocalStorage API:** Persistência de dados no navegador (Mock Database).
 
 ## 📸 Screenshots
+<img width="1423" height="728" alt="image" src="https://github.com/user-attachments/assets/bf52025f-4c2c-47f8-9e12-e91365f15c54" />
 
-*(Coloque aqui prints das telas do seu projeto, ex: Home, Detalhe do Item, Perfil)*
+<img width="1413" height="726" alt="image" src="https://github.com/user-attachments/assets/108688b3-03a7-4c85-9036-42b57ac58cb9" />
+
 
 ## 📦 Como rodar este projeto
 
-1. Clone o repositório:
-   ```bash
-   git clone [https://github.com/SEU-USUARIO/ecoloop.git](https://github.com/SEU-USUARIO/ecoloop.git)
+1. Acesse o site: https://appecoloop.vercel.app/
