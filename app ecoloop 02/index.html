@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10b981"/>
+    <meta name="description" content="Mercado de economia circular. Venda, doe e recicle.">
+    <title>EcoLoop — Mercado Circular</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3233/3233497.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+
+    <header class="app-header sticky-top">
+      <div class="container pt-3">
+        <div class="d-flex align-items-center">
+          <div class="logo" id="headerLogo">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="white" fill-opacity="0.2"/>
+                <path d="M72.5 35C69.5 30 63.5 28 58 29.5C53.5 30.5 50 34 48 38C45 44 40 50 32 50C24.5 50 19 44.5 19 37C19 29.5 25 24 32 24C36.5 24 40.5 26 43 29" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M27.5 65C30.5 70 36.5 72 42 70.5C46.5 69.5 50 66 52 62C55 56 60 50 68 50C75.5 50 81 55.5 81 63C81 70.5 75 76 68 76C63.5 76 59.5 74 57 71" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M79 33L71 35L74 27" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 67L29 65L26 73" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>EcoLoop</span>
+          </div>
+          <div class="ms-auto d-flex align-items-center gap-2">
+            <div class="top-actions d-none d-md-flex">
+              <button class="btn btn-sm btn-light bg-white text-dark border-0 shadow-sm fw-semibold px-3" id="btnMyItems">
+                <i class="fa-solid fa-user-circle me-1"></i> Perfil
+              </button>
+              <button class="btn btn-sm btn-light bg-white text-dark border-0 shadow-sm position-relative px-3" id="btnNotifications">
+                <i class="fa-regular fa-bell"></i>
+                <span id="notifCountTop" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light p-1" style="font-size:0.6rem; display:none;">0</span>
+              </button>
+            </div>
+            <div id="auth-buttons">
+              <button class="btn btn-sm btn-light fw-bold px-3" id="btnLogin">Entrar</button>
+              <button class="btn btn-sm btn-outline-light border-2 fw-bold px-3" id="btnPublishHeader">Cadastrar</button>
+            </div>
+            <div id="user-menu-container" class="d-none"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container my-4">
+      <section id="screen-list" class="fade-in">
+        <div class="row mb-4 align-items-center">
+          <div class="col-12 text-center text-md-start mb-3 mb-md-0">
+            <h3 class="fw-bold mb-1">Mercado Circular</h3>
+            <p class="text-muted small mb-3">Compre, venda e reutilize itens na sua região.</p>
+            <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+              <span class="input-group-text bg-white border-end-0 ps-3"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+              <input id="q" class="form-control border-start-0 border-end-0 ps-0 py-2" placeholder="O que você procura hoje?">
+              <button class="btn btn-primary px-4 fw-bold" id="btn-search">Buscar</button>
+            </div>
+          </div>
+          <div class="col-12 mt-4 d-flex gap-2 overflow-auto pb-2 justify-content-md-start justify-content-center">
+             <button class="btn btn-sm btn-dark rounded-pill px-3 active-filter shadow-sm" onclick="window.filterList('all')">Todos</button>
+             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 bg-white" onclick="window.filterList('active')">Disponíveis</button>
+             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 bg-white" onclick="window.filterList('furniture')">Móveis</button>
+             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 bg-white" onclick="window.filterList('wood')">Madeira</button>
+          </div>
+        </div>
+        <div class="row g-3" id="list-results"></div>
+      </section>
+
+      <section id="screen-create" class="d-none">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="card shadow border-0 fade-in rounded-4 overflow-hidden">
+              <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0 text-center">
+                <div class="mb-2 text-success"><i class="fa-solid fa-circle-plus fa-3x"></i></div>
+                <h4 class="card-title fw-bold">Novo Anúncio</h4>
+                <p class="text-muted small">Dê uma nova vida ao seu item.</p>
+              </div>
+              <div class="card-body px-4 pb-4">
+                <form id="formCreate">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Título</label>
+                    <input id="c_title" class="form-control bg-light border-0" placeholder="Ex: Paletes de Madeira" required>
+                  </div>
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold small text-uppercase text-muted">Categoria</label>
+                      <select id="c_category" class="form-select bg-light border-0">
+                        <option>Móveis</option><option>Eletrônicos</option><option>Madeira</option>
+                        <option>Metal</option><option>Plástico</option><option>Construção Civil</option>
+                        <option>Vidro</option><option>Outros</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold small text-uppercase text-muted">Validade</label>
+                      <select id="c_duration" class="form-select bg-light border-0">
+                        <option value="7">1 semana</option><option value="15">15 dias</option><option value="30" selected>30 dias</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Descrição</label>
+                    <textarea id="c_desc" rows="4" class="form-control bg-light border-0" placeholder="Detalhes importantes..."></textarea>
+                  </div>
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold small text-uppercase text-muted">Volume</label>
+                      <input id="c_volume" class="form-control bg-light border-0" placeholder="Ex: 2kg">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold small text-uppercase text-muted">Local</label>
+                      <input id="c_address" class="form-control bg-light border-0" placeholder="Bairro">
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Foto do Item</label>
+                    <div class="d-flex gap-2 align-items-center">
+                        <label class="card-thumb border bg-white text-primary shadow-sm justify-content-center" style="cursor:pointer; width:100px; height:100px;">
+                        <input type="file" id="c_img_input" accept="image/*" class="d-none">
+                        <div class="text-center"><i class="fa-solid fa-camera fa-lg mb-1"></i><div style="font-size:10px">Adicionar</div></div>
+                        </label>
+                        <div class="card-thumb shadow-sm d-none" id="c_img_preview_container" style="width:100px; height:100px;">
+                            <img id="c_img_preview" src="" alt="preview" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                    </div>
+                  </div>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-2 border-top">
+                    <button type="button" class="btn btn-light fw-bold" id="btn-cancel-create">Cancelar</button>
+                    <button class="btn btn-success px-4 fw-bold shadow-sm" type="submit">Publicar Agora</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-detail" class="d-none">
+        <div class="mb-3">
+           <button class="btn btn-link text-decoration-none text-muted ps-0 fw-semibold" onclick="window.showScreen('screen-list')"><i class="fa-solid fa-arrow-left me-2"></i> Voltar</button>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4 fade-in rounded-4 overflow-hidden">
+              <div class="card-body p-0">
+                <div style="height: 350px; background: #f1f5f9; position:relative; overflow:hidden;">
+                    <img id="d_img" src="" alt="item" style="width:100%; height:100%; object-fit: cover;" onerror="window.handleImgError(this)">
+                    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6));"></div>
+                    <span id="d_status_badge" class="position-absolute top-0 end-0 m-3 badge bg-white text-dark shadow-sm py-2 px-3 fw-bold rounded-pill">ATIVO</span>
+                    <div class="position-absolute bottom-0 start-0 p-4 w-100 text-white">
+                        <h2 id="d_title" class="fw-bold mb-1 text-shadow"></h2>
+                        <p id="d_meta" class="mb-0 small opacity-75"></p>
+                    </div>
+                </div>
+                <div class="p-4">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                      <span class="badge bg-light text-dark border rounded-pill px-3">Expira em <span id="d_expires" class="fw-bold text-danger"></span> dias</span>
+                  </div>
+                  <h5 class="fw-bold text-dark">Sobre este item</h5>
+                  <p id="d_desc" class="text-secondary" style="line-height: 1.7;"></p>
+                  <hr class="my-4 border-light">
+                  <div class="d-flex align-items-center gap-3 bg-light p-3 rounded-4">
+                      <img id="d_owner_avatar" class="avatar" src="" alt="avatar" style="width:52px; height:52px;" onerror="window.handleAvatarError(this)">
+                      <div>
+                         <div class="small text-muted text-uppercase fw-bold">Anunciado por</div>
+                         <div id="d_owner" class="fw-bold fs-5 text-dark"></div>
+                      </div>
+                      <div class="ms-auto">
+                         <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">Ver Perfil</button>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow-sm border-0 fade-in rounded-4">
+               <div class="card-header bg-white border-0 pt-4 px-4"><h5 class="fw-bold mb-0">Ofertas Recentes</h5></div>
+               <div class="card-body px-4 pb-4"><div id="proposals-list" class="d-flex flex-column gap-3"></div></div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card shadow border-0 sticky-top rounded-4" style="top: 100px; z-index:1;">
+              <div class="card-body p-4">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-primary btn-lg fw-bold shadow-sm py-3 rounded-3" id="btn-propose">Tenho Interesse</button>
+                  <button class="btn btn-outline-secondary btn-sm mt-2 rounded-3" id="btn-owner-view"><i class="fa-solid fa-lock me-1"></i> Gerenciar (Dono)</button>
+                </div>
+                <div class="mt-3 text-center p-3 bg-light rounded-3">
+                    <div class="text-success mb-1"><i class="fa-solid fa-shield-halved fa-lg"></i></div>
+                    <small class="text-muted fw-semibold">Negociação segura e direta.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-owner" class="d-none">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow border-0 rounded-4 overflow-hidden">
+                  <div class="card-header bg-dark text-white pt-4 px-4 pb-4 border-0 d-flex justify-content-between align-items-center">
+                    <div>
+                        <button class="btn btn-sm btn-outline-light mb-2 rounded-pill px-3" id="btn-owner-back"><i class="fa-solid fa-arrow-left me-1"></i> Voltar</button>
+                        <h4 class="mb-0 fw-bold">Gerenciar Ofertas</h4>
+                        <p class="text-white-50 small mb-0">Item: <span id="owner-item-title" class="fw-bold text-white"></span></p>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-danger shadow-sm" id="btn-owner-delete" title="Excluir Anúncio"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                  </div>
+                  <div class="card-body p-4 bg-light">
+                    <div id="owner-proposals-list" class="d-flex flex-column gap-2"></div>
+                  </div>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <section id="screen-myitems" class="d-none">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center mb-4"><h4 class="fw-bold">Meu Perfil</h4></div>
+                <div class="bg-white p-2 rounded-pill shadow-sm mb-4 d-inline-block w-100">
+                    <ul class="nav nav-pills nav-fill" id="pills-tab">
+                      <li class="nav-item"><button class="nav-link active rounded-pill" id="pills-selling-tab" onclick="window.switchProfileTab('selling')">O que estou vendendo</button></li>
+                      <li class="nav-item"><button class="nav-link rounded-pill" id="pills-buying-tab" onclick="window.switchProfileTab('buying')">O que quero comprar</button></li>
+                    </ul>
+                </div>
+                <div id="profile-selling-view">
+                    <div class="card shadow-sm border-0 rounded-4 overflow-hidden"><div class="card-body p-0"><div id="my-items-list" class="list-group list-group-flush"></div></div></div>
+                    <div class="text-center mt-4"><button class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm" onclick="window.showScreen('screen-create')"><i class="fa-solid fa-plus me-2"></i> Criar Novo Anúncio</button></div>
+                </div>
+                <div id="profile-buying-view" class="d-none">
+                    <div class="card shadow-sm border-0 rounded-4 overflow-hidden"><div class="card-body p-0"><div id="my-offers-list" class="list-group list-group-flush"></div></div></div>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <section id="screen-notifs" class="d-none">
+         <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4 class="mb-4 fw-bold">Notificações</h4>
+                <div class="list-group shadow-sm border-0 rounded-4 overflow-hidden" id="notifications-list"></div>
+            </div>
+         </div>
+      </section>
+    </main>
+
+    <div class="nav-fixed-bottom d-md-none fade-in">
+      <div class="btn-group shadow border">
+        <button class="btn btn-light" id="navHome"><i class="fa-solid fa-house"></i></button>
+        <button class="btn btn-light" id="navCreate"><i class="fa-solid fa-circle-plus text-success" style="font-size: 1.4rem;"></i></button>
+        <button class="btn btn-light" id="navNotifs"><i class="fa-solid fa-bell"></i></button>
+        <button class="btn btn-light" id="navProfile"><i class="fa-solid fa-user"></i></button>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalConfirmDelete" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-body text-center p-4">
+            <div class="mb-3 text-danger"><i class="fa-solid fa-trash-can fa-3x"></i></div>
+            <h5 class="fw-bold">Excluir Anúncio?</h5>
+            <p class="text-muted small">Não tem volta!</p>
+            <div class="d-flex gap-2 justify-content-center mt-4">
+              <button type="button" class="btn btn-light border fw-bold" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger fw-bold" id="btnConfirmDeleteAction">Sim, Excluir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalLogin" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow rounded-4">
+          <div class="modal-body p-4">
+            <div class="text-center mb-4"><div class="bg-success-subtle rounded-circle d-inline-flex p-3 mb-2 text-success"><i class="fa-solid fa-leaf fa-xl"></i></div><h5 class="fw-bold">EcoLoop Login</h5></div>
+            <form id="formLogin">
+              <div class="form-floating mb-3"><input type="email" class="form-control bg-light border-0" id="login_email" value="joao@teste.com"><label>Email</label></div>
+              <div class="form-floating mb-3"><input type="password" class="form-control bg-light border-0" id="login_password" value="123456"><label>Senha</label></div>
+              <button class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow-sm" type="submit">Entrar</button>
+            </form>
+            <div class="mt-3 text-center small"><a href="#" class="text-decoration-none text-muted" data-bs-dismiss="modal" onclick="modalRegister.show()">Não tem conta? <span class="text-primary fw-bold">Criar agora</span></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalRegister" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow rounded-4">
+          <div class="modal-header border-0"><h5 class="modal-title fw-bold">Criar Conta</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body p-4 pt-0">
+            <form id="formRegister">
+              <div class="mb-3"><label class="form-label small text-muted fw-bold">Nome</label><input id="r_name" class="form-control bg-light border-0" required></div>
+              <div class="mb-3"><label class="form-label small text-muted fw-bold">E-mail</label><input id="r_email" type="email" class="form-control bg-light border-0" required></div>
+              <div class="mb-3"><label class="form-label small text-muted fw-bold">Senha</label><input id="r_password" type="password" class="form-control bg-light border-0" required minlength="4"></div>
+              <button class="btn btn-success w-100 fw-bold rounded-pill shadow-sm" type="submit">Cadastrar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalPropose" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+          <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold">Fazer Oferta</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body p-4">
+            <form id="formPropose">
+              <div class="mb-3"><label class="form-label fw-semibold">Qual sua proposta?</label><select id="p_type" class="form-select mb-2 bg-light border-0" onchange="window.toggleValueInput(this.value)"><option value="pay">Quero comprar (Pago R$)</option><option value="free">Quero retirar de graça (Doação)</option><option value="charge">Cobro para retirar (Serviço)</option></select></div>
+              <div class="mb-3" id="div-p-value"><label class="form-label fw-semibold">Valor (R$)</label><input id="p_value" type="number" class="form-control bg-light border-0" placeholder="0,00"></div>
+              <div class="mb-3"><label class="form-label fw-semibold">Mensagem</label><textarea id="p_msg" class="form-control bg-light border-0" rows="3" placeholder="Olá, tenho interesse..."></textarea></div>
+              <div class="d-grid"><button class="btn btn-primary fw-bold rounded-pill shadow-sm">Enviar Proposta</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js" defer></script>
+  </body>
+</html>
