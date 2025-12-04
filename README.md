@@ -2,7 +2,7 @@
 
 ![Status](https://img.shields.io/badge/Status-Concluído-success) ![License](https://img.shields.io/badge/License-MIT-blue)
 
-## 📖 Sobre o Projeto
+## 📖 Sobre o Projeto - Fase 02 do Programa Movitalent da Moviplu
 
 O **EcoLoop** é uma Single Page Application (SPA) focada em sustentabilidade e economia circular. A plataforma conecta pessoas que desejam dar um novo destino a materiais, móveis e resíduos, permitindo não apenas a **venda**, mas também **doações** e contratação de **serviços de retirada**.
 
